@@ -1,0 +1,23 @@
+.DS_Store
+
+# build
+/.gradle/
+build/
+/local.properties
+fenbi.keystore
+*.commitid
+
+# idea
+/.idea/
+*.iml
+
+*.pyc
+
+#JNI
+app/src/main/libs/armeabi/
+app/src/main/libs/armeabi-v7a/
+obj/
+
+infer-out/
+bugly
+captures/
