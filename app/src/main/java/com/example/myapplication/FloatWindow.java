@@ -32,21 +32,23 @@ public class FloatWindow {
     private float mStartY;
     private int mTitleHeight;
 
-    private static volatile FloatWindow floatWindow;
+    private static FloatWindow floatWindow;
 
-    private FloatWindow(Activity activity) {
-        initView(activity);
-        initfloat(activity);
-        webView.loadUrl("file:///android_asset/time-test/index.html");
+    private FloatWindow(Context context, int titleHeight) {
+        mTitleHeight = titleHeight;
+        context = context.getApplicationContext();
+        initView(context);
+        initfloat(context);
+        webView.loadUrl("https://www.baidu.com");
     }
 
     public static boolean isInited() {
         return floatWindow != null;
     }
 
-    public static void init(Activity activity) {
+    public static void init(Context context, int titleHeight) {
         if (floatWindow == null) {
-            floatWindow = new FloatWindow(activity);
+            floatWindow = new FloatWindow(context, titleHeight);
         }
     }
 
@@ -62,6 +64,13 @@ public class FloatWindow {
             throw new IllegalStateException("请先初始化");
         }
         floatWindow.webView.setVisibility(View.GONE);
+    }
+
+    public static void toggle() {
+        if (floatWindow == null) {
+            throw new IllegalStateException("请先初始化");
+        }
+        floatWindow.webView.setVisibility(floatWindow.webView.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
     }
 
     public static void log(String log) {
@@ -85,8 +94,8 @@ public class FloatWindow {
         mWindowManager.updateViewLayout(mFloatView, mParams);
     }
 
-    private void initView(final Activity activity) {
-        LayoutInflater lif = (LayoutInflater) (activity.getApplicationContext()).getSystemService(LAYOUT_INFLATER_SERVICE);
+    private void initView(final Context context) {
+        LayoutInflater lif = (LayoutInflater) (context).getSystemService(LAYOUT_INFLATER_SERVICE);
         mFloatView = lif.inflate(R.layout.float_view, null);
 
         webView = mFloatView.findViewById(R.id.webview);
@@ -119,10 +128,6 @@ public class FloatWindow {
         mFloatView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (mTitleHeight == 0) {
-                    mTitleHeight = getTitleHeight(activity);
-                }
-
                 mRawX = event.getRawX();
                 mRawY = event.getRawY() - mTitleHeight;
 

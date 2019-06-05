@@ -63,7 +63,37 @@ public class CocosWebView extends WebView {
 //        this.loadUrl("https://liuzhenhua.net/web-mobile/index.html");
 //        this.loadUrl("file:///android_asset/web-mobile1/index.html");
         this.startLoadTime = System.currentTimeMillis();
-        this.startLoadUrl();
+//        this.startLoadUrl();
+    }
+
+    private ViewGroup originParent = null;
+
+    private void releaseMemory() {
+        originParent.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // 方案一：从View树中移除后再加载
+//                ViewGroup parent = ((ViewGroup)getParent());
+//                if (parent == null) {
+//                    originParent.addView(CocosWebView.this);
+//                } else {
+//                    parent.removeView(CocosWebView.this);
+//                }
+//                originParent.removeView(CocosWebView.this);
+//                originParent.addView(CocosWebView.this);
+
+                // 方案二： 调用freeMemory等方法
+//                clearCache(true);
+//                //removeView(wv);
+//                clearView();
+//                freeMemory();
+
+//                destroy();
+//                destroyDrawingCache();
+
+//                releaseMemory();
+            }
+        }, 1000);
     }
 
     private void startLoadUrl() {
@@ -121,6 +151,7 @@ public class CocosWebView extends WebView {
         setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                Log.e(TAG, "console: " + consoleMessage.message());
                 return super.onConsoleMessage(consoleMessage);
             }
         });
@@ -165,6 +196,9 @@ public class CocosWebView extends WebView {
             public void onPageFinished(WebView view, String url) {
                 Log.e(TAG, "PageFinished: " + url);
                 super.onPageFinished(view, url);
+                originParent = (ViewGroup) getParent();
+                releaseMemory();
+
                 injectVConsole();
 
                 if (secondLoaded) {
@@ -201,12 +235,12 @@ public class CocosWebView extends WebView {
 //                    }
 //                }, 3000);
 
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startLoadUrl();
-                    }
-                }, 3000);
+//                postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        startLoadUrl();
+//                    }
+//                }, 3000);
             }
 
             @Override

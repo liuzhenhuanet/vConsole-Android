@@ -17,12 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity
+        <service
+            android:name=".ConsoleService"
             android:process=":secondProcess"
-            android:name=".FloatWindowActivity"
-            android:label="@string/title_activity_float_window"
-            android:theme="@style/AppTheme.PopupOverlay">
-        </activity>
+            android:exported="false">
+        </service>
         <activity android:name=".CocosActivity">
         </activity>
         <activity
