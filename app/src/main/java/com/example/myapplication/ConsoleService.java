@@ -5,12 +5,16 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 public class ConsoleService extends Service {
     private static final String ACTION_BAZ = "com.example.myapplication.action.BAZ";
+    private static final String ACTION_INIT = "com.example.myapplication.consoleservice.action.init";
+    private static final String ACTION_SHOW_ENTRANCE = "com.example.myapplication.consoleservice.action.show_entrance";
+    private static final String ACTION_HIDE_ENTRANCE = "com.example.myapplication.consoleservice.action.hide_entrance";
 
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "com.example.myapplication.extra.PARAM1";
@@ -28,16 +32,35 @@ public class ConsoleService extends Service {
     public void onStart(@Nullable Intent intent, int startId) {
         Log.e(TAG, "onStart");
         super.onStart(intent, startId);
-        if (!FloatWindow.isInited()) {
-            FloatWindow.init(this, 30);
-        }
-        FloatWindow.toggle();
     }
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        int result = super.onStartCommand(intent, flags, startId);
         Log.e(TAG, "onStartCommand");
-        return super.onStartCommand(intent, flags, startId);
+        if (intent == null) {
+            return result;
+        }
+        String action = intent.getAction();
+        if (TextUtils.isEmpty(action)) {
+            return result;
+        }
+        switch (action) {
+            case ACTION_INIT:
+                if (!FloatWindow.isInited()) {
+                    FloatWindow.init(this, intent.getIntExtra(EXTRA_PARAM1, 30));
+                }
+                break;
+            case ACTION_SHOW_ENTRANCE:
+                FloatWindow.showEntrance();
+                break;
+            case ACTION_HIDE_ENTRANCE:
+                FloatWindow.hideEntrance();
+                break;
+                default:
+                    FloatWindow.toggle();
+        }
+        return result;
     }
 
     @Override
@@ -64,6 +87,25 @@ public class ConsoleService extends Service {
         intent.setAction(ACTION_BAZ);
         intent.putExtra(EXTRA_PARAM1, param1);
         intent.putExtra(EXTRA_PARAM2, param2);
+        context.startService(intent);
+    }
+
+    public static void initIfNeed(Context context, int titleHeight) {
+        Intent intent = new Intent(context, ConsoleService.class);
+        intent.setAction(ACTION_INIT);
+        intent.putExtra(EXTRA_PARAM1, titleHeight);
+        context.startService(intent);
+    }
+
+    public static void showEntry(Context context) {
+        Intent intent = new Intent(context, ConsoleService.class);
+        intent.setAction(ACTION_SHOW_ENTRANCE);
+        context.startService(intent);
+    }
+
+    public static void hideEntry(Context context) {
+        Intent intent = new Intent(context, ConsoleService.class);
+        intent.setAction(ACTION_HIDE_ENTRANCE);
         context.startService(intent);
     }
 

@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.app.Activity;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }, 6000);
 
+        ConsoleService.initIfNeed(this, getTitleHeight(this));
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,5 +35,12 @@ public class MainActivity extends AppCompatActivity {
                 ConsoleService.startActionBaz(MainActivity.this, "liuzhenhua1", "liuzhenhua2");
             }
         });
+    }
+
+    private int getTitleHeight(Activity activity) {
+        Rect frame = new Rect();
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+        int statusBarHeight = frame.top;
+        return statusBarHeight;
     }
 }

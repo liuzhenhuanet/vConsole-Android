@@ -79,12 +79,12 @@ public class FloatWindow {
         }
     }
 
+    public static void hideEntrance() {
+        floatWindow.mFloatView.setVisibility(View.GONE);
+    }
 
-    private int getTitleHeight(Activity activity) {
-        Rect frame = new Rect();
-        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-        int statusBarHeight = frame.top;
-        return statusBarHeight;
+    public static void showEntrance() {
+        floatWindow.mFloatView.setVisibility(View.VISIBLE);
     }
 
     private void updateFloatWndPosition() {
